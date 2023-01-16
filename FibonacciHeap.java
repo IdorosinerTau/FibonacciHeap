@@ -334,10 +334,17 @@ public class FibonacciHeap
     *
     */
     public void delete(HeapNode x) 
-    {    
-    	return; // should be replaced by student code
+    {
+    	if (this.min == x) {
+    		this.deleteMin();
+    		return;
+    	}
+    	
+    	int hefresh = x.getKey() - this.min.getKey()+1;
+    	this.decreaseKey(x, hefresh);
+    	this.deleteMin();
+    	return;
     }
-
    /**
     * public void decreaseKey(HeapNode x, int delta)
     *
@@ -452,7 +459,55 @@ public class FibonacciHeap
     */
     public static int[] kMin(FibonacciHeap H, int k)
     {    
-        int[] arr = new int[100];
+    	int[] arr = new int[k];
+    	//if k=0, no keys should return
+    	if (k==0) {
+    		return arr; 
+    	}
+    	//if we have an empty heap, no keys should return
+    	if (H.isEmpty()) {
+    		return arr; 
+    	}
+    	//making a heap with the candidates keys
+    	FibonacciHeap candidateHeap = new FibonacciHeap();
+    	//finding the key with the smallest value
+    	HeapNode curMin = H.findMin();
+    	//inserting a node with the same key value to the new heap
+    	HeapNode newMin = candidateHeap.insert(curMin.getKey());
+    	//connecting the 2 nodes
+    	newMin.setpointerKMin(curMin);
+    	//running over the keys, deleting a key once inserted in arr 
+    	for(int i = 0; i < k; i++) {
+    		arr[i] = curMin.getKey();
+    		candidateHeap.deleteMin();
+    		//inserting the child of the just deleted parent, if it exists
+    		
+    		if (curMin.getChild() != null){
+    			HeapNode childOfCurMin = curMin.getChild();
+    			HeapNode pointerForChild = childOfCurMin.getNext();
+    			while (pointerForChild != null) {
+    				HeapNode curadded = candidateHeap.insert(pointerForChild.getKey());
+    				//connecting between the nodes
+    				curadded.setpointerKMin(pointerForChild);
+    				if(pointerForChild.getNext() == pointerForChild) {
+    					break;
+    				}
+    				if(pointerForChild.getNext()== childOfCurMin) {
+    					break;
+    				}
+    				pointerForChild = pointerForChild.getNext();
+    				
+    			}	
+    		}
+    		curMin = candidateHeap.findMin().getpointerKMin();
+    		
+    	}
+    	
+    	
+    	
+    	
+    	
+    	
         return arr; // should be replaced by student code
     }
     
@@ -474,9 +529,12 @@ public class FibonacciHeap
     	private HeapNode next = null;
     	private HeapNode prev = null;
     	private HeapNode parent = null;
+    	private HeapNode pointerKmin; //used in kMin, pointer towards the node with the same key in the other heap. 
     	
+    
     	public HeapNode(int key) {
     		this.key = key;
+    		this.pointerKmin = null; //for Kmin	
     	}
     	public HeapNode() {}
     	
@@ -524,5 +582,12 @@ public class FibonacciHeap
     	public void setParent(HeapNode parent) {
     		this.parent = parent;
     	}  	
+    	public void setpointerKMin(HeapNode node) {
+    		this.pointerKmin = node;		//setting a pointer
+    	}
+    	public HeapNode getpointerKMin() {
+    		return this.pointerKmin;       //getting  the pointer
+    	}
+    	
     }
 }
