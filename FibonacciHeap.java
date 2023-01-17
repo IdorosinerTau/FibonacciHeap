@@ -68,11 +68,13 @@ public class FibonacciHeap
 	
 	
 	public int findNumOfTrees() {
+		//An empty heap has 0 trees
 		if (isEmpty())
     		return 0;
     	
     	HeapNode node = getFirst();
     	int numOfTrees = 1;
+    	//counting the number of trees until we return to the same one
     	while (node.getNext() != getFirst()) {
     		node = node.getNext();
     		numOfTrees += 1;
@@ -88,7 +90,7 @@ public class FibonacciHeap
     */
     public boolean isEmpty()
     {
-    	return getSize() == 0; // should be replaced by student code
+    	return getSize() == 0; // if the size is 0 the heap is empty
     }
 		
    /**
@@ -174,9 +176,10 @@ public class FibonacciHeap
     }
     
     private HeapNode searchMin() {
+    	//no min key if there are no keys
     	if (isEmpty())
     		return null;
-    	
+    	//going over the parents, if we find a smaller value, saving it as the new minimum
     	HeapNode node = getFirst();
     	HeapNode minNode = node;
     	int minKey = node.getKey();
@@ -458,9 +461,10 @@ public class FibonacciHeap
     * ###CRITICAL### : you are NOT allowed to change H. 
     */
     public static int[] kMin(FibonacciHeap H, int k)
-    {    
+    {   
+    	boolean flag = true;
     	int[] arr = new int[k];
-    	//if k=0, no keys should return
+    	//if k==0, no keys should return
     	if (k==0) {
     		return arr; 
     	}
@@ -499,7 +503,7 @@ public class FibonacciHeap
     				
     			}	
     		}
-    		curMin = candidateHeap.findMin().getpointerKMin();
+    		curMin = candidateHeap.findMin().getpointerKMin(); //updating curmin 
     		
     	}
     	
@@ -509,6 +513,7 @@ public class FibonacciHeap
     	
     	
         return arr; // should be replaced by student code
+    	
     }
     
     
